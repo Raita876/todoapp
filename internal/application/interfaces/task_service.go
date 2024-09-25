@@ -3,5 +3,5 @@ package interfaces
 import "github.com/raita876/todoapp/internal/application/query"
 
 type TaskService interface {
-	FindAllTasks() (*query.TaskQueryResult, error)
+	FindAllTasks() (*query.TaskQueryListResult, error)
 }

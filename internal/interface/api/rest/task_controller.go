@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/raita876/todoapp/internal/application/interfaces"
+	"github.com/raita876/todoapp/internal/interface/api/rest/dto/mapper"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,17 +18,22 @@ func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskContr
 		service: service,
 	}
 
-	e.GET("/api/v1/task", c.CreateTaskController)
+	e.GET("/api/v1/tasks", c.GetAllTasksController)
 
 	return c
 }
 
-func (tc *TaskController) CreateTaskController(c *gin.Context) {
+func (tc *TaskController) GetAllTasksController(c *gin.Context) {
 
-	// TODO: ToTaskResponse 実装
-	response := gin.H{
-		"message": "This is task api.",
+	tasks, err := tc.service.FindAllTasks()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to fetch task",
+		})
+		return
 	}
+
+	response := mapper.ToTaskListResponse(tasks.Result)
 
 	c.JSON(http.StatusOK, response)
 }

@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/raita876/todoapp/internal/application/interfaces"
+	"github.com/raita876/todoapp/internal/application/mapper"
 	"github.com/raita876/todoapp/internal/application/query"
 	"github.com/raita876/todoapp/internal/domain/repositories"
 )
@@ -16,7 +17,16 @@ func NewTaskService(taskRepository repositories.TaskRepository) interfaces.TaskS
 	}
 }
 
-func (ts *TaskService) FindAllTasks() (*query.TaskQueryResult, error) {
-	// TODO
-	return nil, nil
+func (ts *TaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
+	tasks, err := ts.taskRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var taskQueryListResult query.TaskQueryListResult
+	for _, task := range tasks {
+		taskQueryListResult.Result = append(taskQueryListResult.Result, mapper.NewTaskResultFromEntity(task))
+	}
+
+	return &taskQueryListResult, nil
 }

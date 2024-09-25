@@ -7,6 +7,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
+
+	"gorm.io/driver/postgres"
+
+	"github.com/raita876/todoapp/internal/application/services"
+	postgres2 "github.com/raita876/todoapp/internal/infrastructure/db/postgres"
+	"github.com/raita876/todoapp/internal/interface/api/rest"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -30,16 +37,22 @@ func main() {
 				})
 			})
 
-			// TODO
-			// taskRepo := postgres2.NewGormTaskRepository(gormDB)
+			dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Tokyo"
+			port := ":8080"
 
-			// TODO: service 実装
-			// taskService := services.NewTaskService()
+			// TODO: DB 接続を成功させる
+			gormDB, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+			// if err != nil {
+			// 	log.Fatalf("Failed to connect to database: %v", err)
+			// }
 
-			// TODO
-			// rest.NewTaskController(e, )
+			taskRepo := postgres2.NewGormTaskRepository(gormDB)
 
-			return e.Run()
+			taskService := services.NewTaskService(taskRepo)
+
+			rest.NewTaskController(e, taskService)
+
+			return e.Run(port)
 		},
 	}
 
