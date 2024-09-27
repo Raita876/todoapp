@@ -7,7 +7,7 @@ import (
 )
 
 type Task struct {
-	Id          uuid.UUID `gorm:"primaryKey"`
+	Id          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Name        string
 	Description string
 	StatusId    int

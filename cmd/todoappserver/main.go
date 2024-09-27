@@ -37,14 +37,13 @@ func main() {
 				})
 			})
 
-			dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Tokyo"
+			dsn := "host=localhost user=postgres password=postgres dbname=todoapp_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
 			port := ":8080"
 
-			// TODO: DB 接続を成功させる
-			gormDB, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-			// if err != nil {
-			// 	log.Fatalf("Failed to connect to database: %v", err)
-			// }
+			gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+			if err != nil {
+				return err
+			}
 
 			taskRepo := postgres2.NewGormTaskRepository(gormDB)
 

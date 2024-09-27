@@ -5,9 +5,9 @@ CREATE DATABASE todoapp_db;
 DROP TABLE IF EXISTS tasks;
 
 CREATE TABLE tasks (
-    id char(48) NOT NULL PRIMARY KEY,
-    name char(64) NOT NULL,
-    description char(256) NOT NULL,
+    id uuid PRIMARY KEY NOT NULL UNIQUE,
+    name varchar(64) NOT NULL,
+    description varchar(256) NOT NULL,
     status_id integer NOT NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL
