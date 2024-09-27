@@ -9,16 +9,16 @@ release:
 	goreleaser release --clean
 
 .PHONY: run
-run:
+run: build
 	./dist/todoapp_linux_amd64_v1/todoapp
 
 .PHONY: up
 up:
-	docker compose -f ./deployments/docker-cmpose.yaml up -d
+	docker compose -f ./deployments/compose.yaml up -d
 
 .PHONY: down
 down:
-	docker compose -f ./deployments/docker-cmpose.yaml down 
+	docker compose -f ./deployments/compose.yaml down 
 
 .PHONY: psql
 psql:
