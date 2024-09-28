@@ -16,6 +16,11 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	version string
+	name    string
+)
+
 func main() {
 	cli.VersionFlag = &cli.BoolFlag{
 		Name:    "version",
@@ -24,10 +29,10 @@ func main() {
 	}
 
 	app := &cli.App{
-		Version:   "TODO: version",
-		Name:      "TODO: name",
-		Usage:     "TODO: usage",
-		UsageText: "TODO: usageText",
+		Version:   version,
+		Name:      name,
+		Usage:     "This is a REST API for task management.",
+		UsageText: "todoappserver [OPTION]...",
 		Flags:     []cli.Flag{},
 		Action: func(ctx *cli.Context) error {
 			e := gin.Default()

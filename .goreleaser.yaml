@@ -1,5 +1,8 @@
 version: 2
 
+env:
+  - VERSION={{ .Env.VERSION }}
+
 before:
   hooks:
     - go mod tidy
@@ -7,6 +10,7 @@ before:
 
 builds:
   - main: ./cmd/todoappserver
+    binary: todoappserver
     env:
       - CGO_ENABLED=0
     goos:
@@ -16,7 +20,7 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X main.name=todoappserver
+      - -s -w -X main.version={{ .Env.VERSION }} -X main.name=todoappserver
 
 archives:
   - format: tar.gz
