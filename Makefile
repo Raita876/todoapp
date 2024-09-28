@@ -18,6 +18,15 @@ run: build
 help: build
 	./dist/todoapp_linux_amd64_v1/todoappserver --help
 
+.PHONY: test
+test:
+	go test -v -cover -coverprofile=index.out ./internal/...
+
+.PHONY: cover
+cover: test
+	go tool cover -html=index.out -o index.html
+	python3 -m http.server 8765
+
 .PHONY: up
 up:
 	docker compose -f ./deployments/compose.yaml up -d

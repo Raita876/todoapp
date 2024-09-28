@@ -16,9 +16,12 @@
 - データベース
   - postgreSQL
 
+- テスト
+  - gotests
+
 - CI/CD
   - goreleaser
-
+  
 ## API
 
 - <http://localhost:8080/ping>
