@@ -23,6 +23,17 @@ func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskContr
 	return c
 }
 
+// @BasePath /api/v1
+
+// PingExample godoc
+// @Summary Get tasks
+// @Schemes http
+// @Description get tasks
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.ListTaskResponse
+// @Router /tasks [get]
 func (tc *TaskController) GetAllTasksController(c *gin.Context) {
 
 	tasks, err := tc.service.FindAllTasks()

@@ -10,12 +10,16 @@ build:
 release:
 	goreleaser release --clean
 
+.PHONY: swag
+swag:
+	swag init -g cmd/todoappserver/main.go
+
 .PHONY: run
-run: build
+run: swag build
 	./dist/todoapp_linux_amd64_v1/todoappserver
 
 .PHONY: help
-help: build
+help: swag build
 	./dist/todoapp_linux_amd64_v1/todoappserver --help
 
 .PHONY: test

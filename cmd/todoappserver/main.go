@@ -6,13 +6,14 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/urfave/cli/v2"
-
-	"gorm.io/driver/postgres"
-
+	"github.com/raita876/todoapp/docs"
 	"github.com/raita876/todoapp/internal/application/services"
 	postgres2 "github.com/raita876/todoapp/internal/infrastructure/db/postgres"
 	"github.com/raita876/todoapp/internal/interface/api/rest"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/urfave/cli/v2"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -42,7 +43,10 @@ func main() {
 				})
 			})
 
+			// TODO: flag or config file で制御
 			dsn := "host=localhost user=postgres password=postgres dbname=todoapp_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
+
+			// TODO: flag で制御
 			port := ":8080"
 
 			gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -55,6 +59,9 @@ func main() {
 			taskService := services.NewTaskService(taskRepo)
 
 			rest.NewTaskController(e, taskService)
+
+			docs.SwaggerInfo.BasePath = "/api/v1"
+			e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 			return e.Run(port)
 		},

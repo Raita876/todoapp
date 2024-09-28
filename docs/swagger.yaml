@@ -1,0 +1,42 @@
+definitions:
+  response.ListTaskResponse:
+    properties:
+      Tasks:
+        items:
+          $ref: '#/definitions/response.TaskResponse'
+        type: array
+    type: object
+  response.TaskResponse:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      statusId:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: get tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListTaskResponse'
+      summary: Get tasks
+      tags:
+      - tasks
+swagger: "2.0"
