@@ -19,6 +19,9 @@
 - テスト
   - gotests
 
+- ドキュメント
+  - swagger
+
 - CI/CD
   - goreleaser
   
