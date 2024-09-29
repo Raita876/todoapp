@@ -18,8 +18,10 @@
 
 - テスト
   - gotests
+  - golangci
+  - govulncheck
   - runn
-
+  
 - ドキュメント
   - swagger
 
