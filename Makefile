@@ -30,6 +30,14 @@ test:
 e2e:
 	runn run --verbose ./test/runn/runn.yaml
 
+.PHONY: golangci
+golangci:
+	golangci-lint run -v ./...
+
+.PHONY: govulncheck
+govulncheck:
+	govulncheck ./...
+
 .PHONY: cover
 cover: test
 	go tool cover -html=index.out -o index.html
