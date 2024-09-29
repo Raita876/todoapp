@@ -18,6 +18,7 @@
 
 - テスト
   - gotests
+  - runn
 
 - ドキュメント
   - swagger

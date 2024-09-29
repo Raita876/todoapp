@@ -26,6 +26,10 @@ help: swag build
 test:
 	go test -v -cover -coverprofile=index.out ./internal/...
 
+.PHONY: e2e
+e2e:
+	runn run --verbose ./test/runn/runn.yaml
+
 .PHONY: cover
 cover: test
 	go tool cover -html=index.out -o index.html
