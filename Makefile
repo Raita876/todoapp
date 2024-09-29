@@ -35,10 +35,6 @@ cover: test
 golangci:
 	golangci-lint run -v ./...
 
-.PHONY: govulncheck
-govulncheck:
-	govulncheck ./...
-
 .PHONY: e2e
 e2e:
 	runn run --verbose ./test/runn/runn.yaml
