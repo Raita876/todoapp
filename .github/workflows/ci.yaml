@@ -22,19 +22,11 @@ jobs:
       - name: install dependencies
         run: go mod download
 
-      - name: install golangci-lint
-        run: |
-          DOWNLOAD_OS=linux
-          DOWNLOAD_ARCH=amd64
-          DOWNLOAD_VERSION=1.59.0
-          curl -L \
-            https://github.com/golangci/golangci-lint/releases/download/v${DOWNLOAD_VERSION}/golangci-lint-${DOWNLOAD_VERSION}-${DOWNLOAD_OS}-${DOWNLOAD_ARCH}.tar.gz \
-            -o /tmp/golangci-lint-${DOWNLOAD_VERSION}-${DOWNLOAD_OS}-${DOWNLOAD_ARCH}.tar.gz
-          tar -C /tmp -xzf /tmp/golangci-lint-${DOWNLOAD_VERSION}-${DOWNLOAD_OS}-${DOWNLOAD_ARCH}.tar.gz
-          mv /tmp/golangci-lint-${DOWNLOAD_VERSION}-${DOWNLOAD_OS}-${DOWNLOAD_ARCH}/golangci-lint /usr/local/bin/
-
       - name: install govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+
       - name: run CI
-        run: make test golangci govulncheck
+        run: make test govulncheck
