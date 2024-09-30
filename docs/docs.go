@@ -43,7 +43,7 @@ const docTemplate = `{
         "response.ListTaskResponse": {
             "type": "object",
             "properties": {
-                "Tasks": {
+                "tasks": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/response.TaskResponse"
@@ -54,7 +54,7 @@ const docTemplate = `{
         "response.TaskResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "create_at": {
                     "type": "string"
                 },
                 "description": {
@@ -66,10 +66,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "statusId": {
+                "status_id": {
                     "type": "integer"
                 },
-                "updatedAt": {
+                "update_at": {
                     "type": "string"
                 }
             }

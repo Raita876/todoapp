@@ -32,7 +32,7 @@
         "response.ListTaskResponse": {
             "type": "object",
             "properties": {
-                "Tasks": {
+                "tasks": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/response.TaskResponse"
@@ -43,7 +43,7 @@
         "response.TaskResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "create_at": {
                     "type": "string"
                 },
                 "description": {
@@ -55,10 +55,10 @@
                 "name": {
                     "type": "string"
                 },
-                "statusId": {
+                "status_id": {
                     "type": "integer"
                 },
-                "updatedAt": {
+                "update_at": {
                     "type": "string"
                 }
             }

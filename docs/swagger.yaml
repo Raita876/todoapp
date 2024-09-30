@@ -1,14 +1,14 @@
 definitions:
   response.ListTaskResponse:
     properties:
-      Tasks:
+      tasks:
         items:
           $ref: '#/definitions/response.TaskResponse'
         type: array
     type: object
   response.TaskResponse:
     properties:
-      createdAt:
+      create_at:
         type: string
       description:
         type: string
@@ -16,9 +16,9 @@ definitions:
         type: string
       name:
         type: string
-      statusId:
+      status_id:
         type: integer
-      updatedAt:
+      update_at:
         type: string
     type: object
 info:

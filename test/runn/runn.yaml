@@ -12,4 +12,4 @@ steps:
             application/json: null
     test: |
       steps.get_tasks.res.status == 200
-      && len(steps.get_tasks.res.body.Tasks) == 5
+      && len(steps.get_tasks.res.body.tasks) == 5
