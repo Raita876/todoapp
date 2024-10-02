@@ -13,3 +13,5 @@ steps:
     test: |
       steps.get_tasks.res.status == 200
       && len(steps.get_tasks.res.body.tasks) == 5
+  post_tasks:
+    # TODO: post tasks
