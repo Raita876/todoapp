@@ -1,9 +1,11 @@
 package services
 
 import (
+	"github.com/raita876/todoapp/internal/application/command"
 	"github.com/raita876/todoapp/internal/application/interfaces"
 	"github.com/raita876/todoapp/internal/application/mapper"
 	"github.com/raita876/todoapp/internal/application/query"
+	"github.com/raita876/todoapp/internal/domain/entities"
 	"github.com/raita876/todoapp/internal/domain/repositories"
 )
 
@@ -29,4 +31,23 @@ func (ts *TaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 	}
 
 	return &taskQueryListResult, nil
+}
+
+func (ts *TaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*command.CreateTaskCommandResult, error) {
+	task := entities.NewTask(taskCommand.Name, taskCommand.Description, taskCommand.StatusId)
+	err := task.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = ts.taskRepository.Create(task)
+	if err != nil {
+		return nil, err
+	}
+
+	result := command.CreateTaskCommandResult{
+		Result: mapper.NewTaskResultFromEntity(task),
+	}
+
+	return &result, nil
 }

@@ -1,5 +1,6 @@
 export VERSION ?= $(shell cat ./VERSION)
 export PGPASSWORD = postgres
+export GIN_MODE = release
 
 
 .PHONY: build

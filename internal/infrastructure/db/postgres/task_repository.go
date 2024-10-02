@@ -28,3 +28,13 @@ func (repo *GormTaskRepository) FindAll() ([]*entities.Task, error) {
 
 	return tasks, nil
 }
+
+func (repo *GormTaskRepository) Create(task *entities.Task) (*entities.Task, error) {
+	dbTask := toDBTask(task)
+
+	if err := repo.db.Create(dbTask).Error; err != nil {
+		return nil, err
+	}
+
+	return task, nil
+}
