@@ -98,22 +98,18 @@ func TestGormTaskRepository_FindAll(t *testing.T) {
 }
 
 func TestGormTaskRepository_Create(t *testing.T) {
-	type fields struct {
-		db *gorm.DB
-	}
+
 	type args struct {
 		task *entities.Task
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *entities.Task
 		wantErr bool
 	}{
 		{
-			name:   "nomal",
-			fields: fields{},
+			name: "nomal",
 			args: args{
 				task: &entities.Task{
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
