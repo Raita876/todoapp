@@ -2,7 +2,6 @@ export VERSION ?= $(shell cat ./VERSION)
 export PGPASSWORD = postgres
 export GIN_MODE = release
 
-
 .PHONY: build
 build:
 	goreleaser release --snapshot --clean
@@ -11,13 +10,24 @@ build:
 release:
 	goreleaser release --clean
 
+.PHONY: dockerbuild
+dockerbuild:
+	docker build \
+		-t todoappserver:$(VERSION) \
+		--build-arg VERSION=$(VERSION) \
+		.
+
 .PHONY: swag
 swag:
 	swag init -g cmd/todoappserver/main.go
 
 .PHONY: run
 run: swag build
-	./dist/todoapp_linux_amd64_v1/todoappserver
+	./dist/todoapp_linux_amd64_v1/todoappserver &
+
+.PHONY: stop
+stop:
+	kill -9 $(shell pgrep todoappserver)
 
 .PHONY: help
 help: swag build
