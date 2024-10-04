@@ -22,6 +22,17 @@ jobs:
       - name: install dependencies
         run: go mod download
 
+      - name: install swag
+        run: |
+          DOWNLOAD_OS=Linux
+          DOWNLOAD_ARCH=amd64
+          DOWNLOAD_VERSION=1.16.3
+          curl -L \
+            https://github.com/swaggo/swag/releases/download/v${DOWNLOAD_VERSION}/swag_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz \
+            -o /tmp/swag_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz
+          tar -C /tmp -xzf /tmp/swag_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz
+          mv /tmp/swag /usr/local/bin/
+
       - name: install goreleaser
         run: |
           DOWNLOAD_OS=Linux
