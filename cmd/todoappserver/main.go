@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -36,6 +37,15 @@ func main() {
 		UsageText: "todoappserver [OPTION]...",
 		Flags:     []cli.Flag{},
 		Action: func(ctx *cli.Context) error {
+			gin.DisableConsoleColor()
+
+			// TODO: パラメータで制御
+			f, err := os.OpenFile("todoappserver.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+			if err != nil {
+				return err
+			}
+			gin.DefaultWriter = io.MultiWriter(f)
+
 			e := gin.Default()
 			e.GET("/ping", func(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{
