@@ -44,5 +44,16 @@ jobs:
           tar -C /tmp -xzf /tmp/goreleaser_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz
           mv /tmp/goreleaser /usr/local/bin/
 
+      - name: install runn
+        run: |
+          DOWNLOAD_OS=linux
+          DOWNLOAD_ARCH=amd64
+          DOWNLOAD_VERSION=0.120.0
+          curl -L \
+            https://github.com/k1LoW/runn/releases/download/v${DOWNLOAD_VERSION}/runn_v${DOWNLOAD_VERSION}_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz \
+            -o /tmp/runn_v${DOWNLOAD_VERSION}_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz
+          tar -C /tmp -xzf /tmp/runn_v${DOWNLOAD_VERSION}_${DOWNLOAD_OS}_${DOWNLOAD_ARCH}.tar.gz
+          mv /tmp/runn /usr/local/bin/
+
       - name: run scenario test
         run: make up run scenariotest
