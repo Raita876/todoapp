@@ -1,4 +1,4 @@
-name: ci
+name: scenario_test
 
 on:
   push:
