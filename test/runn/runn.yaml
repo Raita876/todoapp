@@ -14,4 +14,13 @@ steps:
       steps.get_tasks.res.status == 200
       && len(steps.get_tasks.res.body.tasks) == 5
   post_tasks:
-    # TODO: post tasks
+    req:
+      /tasks:
+        post:
+          body:
+            application/json:
+              name: "task for scenario test"
+              description: "This is task for scenario test"
+              status_id: 0
+    test: |
+      steps.post_tasks.res.status == 201

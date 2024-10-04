@@ -46,8 +46,8 @@ cover: test
 golangci:
 	golangci-lint run -v ./...
 
-.PHONY: e2e
-e2e:
+.PHONY: scenariotest
+scenariotest:
 	runn run --verbose ./test/runn/runn.yaml
 
 .PHONY: up
