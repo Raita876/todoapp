@@ -44,6 +44,22 @@ curl \
 http://localhost:8080/api/v1/tasks
 ```
 
+```bash
+curl \
+-X PUT \
+-H "Content-Type: application/json" \
+-d '{"id": "fad796a1-e0ed-4ee5-9f88-9b7258d35ae9", "name":"updated task", "description":"This is updated task", "status_id": 5}' \
+http://localhost:8080/api/v1/tasks
+```
+
+```bash
+curl \
+-X DELETE \
+-H "Content-Type: application/json" \
+-d '{"id": "07aaadbc-8967-406f-aebd-58b289377aef"}' \
+http://localhost:8080/api/v1/tasks
+```
+
 ## 参考
 
 <https://github.com/sklinkert/go-ddd/tree/main>

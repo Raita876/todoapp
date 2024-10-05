@@ -8,6 +8,7 @@ type CreateTaskCommand struct {
 	StatusId    int
 }
 
+// TODO: パッケージ分割
 type UpdateTaskCommand struct {
 	ID          uuid.UUID
 	Name        string

@@ -23,6 +23,8 @@ func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskContr
 	e.GET("/api/v1/tasks", c.GetAllTasksController)
 	e.GET("/api/v1/tasks/:id", c.GetTaskByIdController)
 	e.POST("/api/v1/tasks", c.CreateTaskController)
+	e.PUT("/api/v1/tasks", c.PutTaskController)
+	e.DELETE("/api/v1/tasks", c.DeleteTaskController)
 
 	return c
 }
@@ -116,12 +118,56 @@ func (tc *TaskController) CreateTaskController(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-// TODO
+// TODO: swagger 記載
 func (tc *TaskController) PutTaskController(c *gin.Context) {
+	var updateTaskRequest request.UpdateTaskRequest
 
+	if err := c.Bind(&updateTaskRequest); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Failed to parse request body",
+		})
+		return
+	}
+
+	updateTaskCommand, err := updateTaskRequest.ToUpdateTaskCommand()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid task Id format",
+		})
+		return
+	}
+
+	commandResult, err := tc.service.UpdateTask(updateTaskCommand)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to update task",
+		})
+		return
+	}
+
+	response := mapper.ToTaskResponse(commandResult.Result)
+
+	c.JSON(http.StatusOK, response)
 }
 
-// TODO
+// TODO: swagger 記載
 func (tc *TaskController) DeleteTaskController(c *gin.Context) {
+	var deleteTaskRequest request.DeleteTaskRequest
 
+	if err := c.Bind(&deleteTaskRequest); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Failed to parse request body",
+		})
+		return
+	}
+
+	err := tc.service.DeleteTask(deleteTaskRequest.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Failed to delete task",
+		})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

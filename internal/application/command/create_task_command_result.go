@@ -6,6 +6,7 @@ type CreateTaskCommandResult struct {
 	Result *common.TaskResult
 }
 
+// TODO: パッケージ分割
 type UpdateTaskCommandResult struct {
 	Result *common.TaskResult
 }

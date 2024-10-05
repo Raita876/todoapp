@@ -77,15 +77,15 @@ func (ts *TaskService) UpdateTask(updateCommand *command.UpdateTaskCommand) (*co
 		return nil, errors.New("task not found")
 	}
 
-	if err := task.UpdateName(task.Name); err != nil {
+	if err := task.UpdateName(updateCommand.Name); err != nil {
 		return nil, err
 	}
 
-	if err := task.UpdateDescription(task.Description); err != nil {
+	if err := task.UpdateDescription(updateCommand.Description); err != nil {
 		return nil, err
 	}
 
-	if err := task.UpdateStatus(task.StatusId); err != nil {
+	if err := task.UpdateStatus(updateCommand.StatusId); err != nil {
 		return nil, err
 	}
 
