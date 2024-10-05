@@ -1,8 +1,6 @@
 desc: todoappserver E2E test
 runners:
   req: http://localhost:8080/api/v1
-# vars:
-#   id: 1
 steps:
   get_tasks:
     req:
@@ -22,6 +20,14 @@ steps:
     test: |
       steps.get_task_by_id.res.status == 200
       && steps.get_task_by_id.res.body.id == "b81240b0-7122-4d06-bdb2-8bcf512d6c63"
+  get_task_by_id_error:
+    req:
+      /tasks/0922ebda-cc4f-4eeb-b360-61f9df22b804:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_task_by_id_error.res.status == 500
   post_tasks:
     req:
       /tasks:
@@ -33,6 +39,17 @@ steps:
               status_id: 0
     test: |
       steps.post_tasks.res.status == 201
+  post_tasks_error:
+    req:
+      /tasks:
+        post:
+          body:
+            application/json:
+              name: ""
+              description: ""
+              status_id: 1
+    test: |
+      steps.post_tasks_error.res.status == 500
   update_task:
     req:
       /tasks:
@@ -46,6 +63,18 @@ steps:
     test: |
       steps.update_task.res.status == 200
       && steps.update_task.res.body.id == "fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"
+  update_task_error:
+    req:
+      /tasks:
+        put:
+          body:
+            application/json:
+              id: "fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"
+              name: ""
+              description: ""
+              status_id: 6
+    test: |
+      steps.update_task_error.res.status == 500
   delete_task:
     req:
       /tasks:
@@ -55,3 +84,12 @@ steps:
               id: "07aaadbc-8967-406f-aebd-58b289377aef"
     test: |
       steps.delete_task.res.status == 204
+  delete_task_not_found: # TODO: 存在しない id が指定された場合はエラーを返却する
+    req:
+      /tasks:
+        delete:
+          body:
+            application/json:
+              id: "07aaadbc-8967-406f-aebd-58b289377aef"
+    test: |
+      steps.delete_task_not_found.res.status == 204
