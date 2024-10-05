@@ -42,6 +42,12 @@ func (m *MockTaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 	return taskQueryListResult, args.Error(1)
 }
 
+func (m *MockTaskService) FindById(id uuid.UUID) (*query.TaskQueryResult, error) {
+	// TODO
+
+	return nil, nil
+}
+
 func (m *MockTaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*command.CreateTaskCommandResult, error) {
 	args := m.Called(taskCommand)
 
@@ -56,6 +62,16 @@ func (m *MockTaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*c
 	}
 
 	return &result, args.Error(1)
+}
+
+func (m *MockTaskService) UpdateTask(updateCommand *command.UpdateTaskCommand) (*command.UpdateTaskCommandResult, error) {
+	// TODO
+	return nil, nil
+}
+
+func (m *MockTaskService) DeleteTask(id uuid.UUID) error {
+	// TODO
+	return nil
 }
 
 func TestNewTaskController(t *testing.T) {

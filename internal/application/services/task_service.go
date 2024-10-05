@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+
+	"github.com/google/uuid"
 	"github.com/raita876/todoapp/internal/application/command"
 	"github.com/raita876/todoapp/internal/application/interfaces"
 	"github.com/raita876/todoapp/internal/application/mapper"
@@ -33,6 +36,18 @@ func (ts *TaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 	return &taskQueryListResult, nil
 }
 
+func (ts *TaskService) FindById(id uuid.UUID) (*query.TaskQueryResult, error) {
+	task, err := ts.taskRepository.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var queryResult query.TaskQueryResult
+	queryResult.Result = mapper.NewTaskResultFromEntity(task)
+
+	return &queryResult, nil
+}
+
 func (ts *TaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*command.CreateTaskCommandResult, error) {
 	task := entities.NewTask(taskCommand.Name, taskCommand.Description, taskCommand.StatusId)
 	err := task.Validate()
@@ -50,4 +65,47 @@ func (ts *TaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*comm
 	}
 
 	return &result, nil
+}
+
+func (ts *TaskService) UpdateTask(updateCommand *command.UpdateTaskCommand) (*command.UpdateTaskCommandResult, error) {
+	task, err := ts.taskRepository.FindById(updateCommand.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if task == nil {
+		return nil, errors.New("task not found")
+	}
+
+	if err := task.UpdateName(task.Name); err != nil {
+		return nil, err
+	}
+
+	if err := task.UpdateDescription(task.Description); err != nil {
+		return nil, err
+	}
+
+	if err := task.UpdateStatus(task.StatusId); err != nil {
+		return nil, err
+	}
+
+	err = task.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = ts.taskRepository.Update(task)
+	if err != nil {
+		return nil, err
+	}
+
+	result := command.UpdateTaskCommandResult{
+		Result: mapper.NewTaskResultFromEntity(task),
+	}
+
+	return &result, nil
+}
+
+func (ts *TaskService) DeleteTask(id uuid.UUID) error {
+	return ts.taskRepository.Delete(id)
 }

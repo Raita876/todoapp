@@ -26,8 +26,20 @@ func (m *MockTaskRepository) FindAll() ([]*entities.Task, error) {
 	return m.tasks, nil
 }
 
+func (m *MockTaskRepository) FindById(id uuid.UUID) (*entities.Task, error) {
+	return m.tasks[0], nil
+}
+
 func (m *MockTaskRepository) Create(task *entities.Task) (*entities.Task, error) {
 	return task, nil
+}
+
+func (m *MockTaskRepository) Update(task *entities.Task) (*entities.Task, error) {
+	return task, nil
+}
+
+func (m *MockTaskRepository) Delete(id uuid.UUID) error {
+	return nil
 }
 
 func TestNewTaskService(t *testing.T) {
