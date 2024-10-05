@@ -61,3 +61,21 @@ func (t *Task) UpdateStatus(statusId int) error {
 
 	return t.Validate()
 }
+
+func EqualTask(src, dst *Task) bool {
+	if src == nil && dst == nil {
+		return true
+	}
+
+	if src == nil || dst == nil {
+		return false
+	}
+
+	if src.Name != dst.Name ||
+		src.Description != dst.Description ||
+		src.StatusId != dst.StatusId {
+		return false
+	}
+
+	return true
+}

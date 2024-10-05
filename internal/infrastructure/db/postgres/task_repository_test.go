@@ -159,25 +159,6 @@ func TestGormTaskRepository_Create(t *testing.T) {
 	}
 }
 
-// TODO: 別パッケージに移植
-func equalTask(got, want *entities.Task) bool {
-	if got == nil && want == nil {
-		return true
-	}
-
-	if got == nil || want == nil {
-		return false
-	}
-
-	if got.Name != want.Name ||
-		got.Description != want.Description ||
-		got.StatusId != want.StatusId {
-		return false
-	}
-
-	return true
-}
-
 func TestGormTaskRepository_Update(t *testing.T) {
 	type args struct {
 		task *entities.Task
@@ -238,7 +219,7 @@ func TestGormTaskRepository_Update(t *testing.T) {
 				t.Errorf("GormTaskRepository.Update() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !equalTask(got, tt.want) {
+			if !entities.EqualTask(got, tt.want) {
 				t.Errorf("GormTaskRepository.Update() = %v, want %v", got, tt.want)
 			}
 		})
