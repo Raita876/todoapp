@@ -40,3 +40,24 @@ func NewTask(name, description string, statusId int) *Task {
 		UpdatedAt:   time.Now(),
 	}
 }
+
+func (t *Task) UpdateName(name string) error {
+	t.Name = name
+	t.UpdatedAt = time.Now()
+
+	return t.Validate()
+}
+
+func (t *Task) UpdateDescription(description string) error {
+	t.Description = description
+	t.UpdatedAt = time.Now()
+
+	return t.Validate()
+}
+
+func (t *Task) UpdateStatus(statusId int) error {
+	t.StatusId = statusId
+	t.UpdatedAt = time.Now()
+
+	return t.Validate()
+}

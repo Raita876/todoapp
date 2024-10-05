@@ -1,6 +1,7 @@
 package postgre
 
 import (
+	"github.com/google/uuid"
 	"github.com/raita876/todoapp/internal/domain/entities"
 	"github.com/raita876/todoapp/internal/domain/repositories"
 	"gorm.io/gorm"
@@ -29,6 +30,15 @@ func (repo *GormTaskRepository) FindAll() ([]*entities.Task, error) {
 	return tasks, nil
 }
 
+func (repo *GormTaskRepository) FindById(id uuid.UUID) (*entities.Task, error) {
+	var dbTask Task
+	if err := repo.db.First(&dbTask, id).Error; err != nil {
+		return nil, err
+	}
+
+	return fromDBTask(&dbTask), nil
+}
+
 func (repo *GormTaskRepository) Create(task *entities.Task) (*entities.Task, error) {
 	dbTask := toDBTask(task)
 
@@ -37,4 +47,18 @@ func (repo *GormTaskRepository) Create(task *entities.Task) (*entities.Task, err
 	}
 
 	return task, nil
+}
+
+func (repo *GormTaskRepository) Update(task *entities.Task) (*entities.Task, error) {
+	dbTask := toDBTask(task)
+	err := repo.db.Model(&task).Where("id = ?", dbTask.Id).Updates(dbTask).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return repo.FindById(dbTask.Id)
+}
+
+func (repo *GormTaskRepository) Delete(id uuid.UUID) error {
+	return repo.db.Delete(&Task{}, id).Error
 }
