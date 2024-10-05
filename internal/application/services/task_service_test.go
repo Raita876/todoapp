@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -27,7 +28,13 @@ func (m *MockTaskRepository) FindAll() ([]*entities.Task, error) {
 }
 
 func (m *MockTaskRepository) FindTaskById(id uuid.UUID) (*entities.Task, error) {
-	return m.tasks[0], nil
+	task := m.tasks[0]
+
+	if task.Id != id {
+		return nil, errors.New("task not found")
+	}
+
+	return task, nil
 }
 
 func (m *MockTaskRepository) Create(task *entities.Task) (*entities.Task, error) {
@@ -52,7 +59,7 @@ func TestNewTaskService(t *testing.T) {
 		want interfaces.TaskService
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				taskRepository: &MockTaskRepository{
 					tasks: []*entities.Task{
@@ -103,7 +110,7 @@ func TestTaskService_FindAllTasks(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				taskRepository: &MockTaskRepository{
 					tasks: []*entities.Task{
@@ -183,7 +190,7 @@ func TestTaskService_CreateTask(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				taskRepository: &MockTaskRepository{},
 			},
@@ -204,7 +211,7 @@ func TestTaskService_CreateTask(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "abnomal empty name",
+			name: "abnormal empty name",
 			fields: fields{
 				taskRepository: &MockTaskRepository{},
 			},
@@ -219,7 +226,7 @@ func TestTaskService_CreateTask(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "abnomal empty description",
+			name: "abnormal empty description",
 			fields: fields{
 				taskRepository: &MockTaskRepository{},
 			},
@@ -247,6 +254,151 @@ func TestTaskService_CreateTask(t *testing.T) {
 
 			if !equalCreateTaskCommandResult(got, tt.want) {
 				t.Errorf("TaskService.CreateTask() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTaskService_FindTaskById(t *testing.T) {
+	type fields struct {
+		taskRepository repositories.TaskRepository
+	}
+	type args struct {
+		id uuid.UUID
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *query.TaskQueryResult
+		wantErr bool
+	}{
+		{
+			name: "normal",
+			fields: fields{
+				taskRepository: &MockTaskRepository{
+					tasks: []*entities.Task{
+						{
+							Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+							Name:        "Task One",
+							Description: "This is the first task",
+							StatusId:    1,
+							CreatedAt:   now,
+							UpdatedAt:   now,
+						},
+					},
+				},
+			},
+			args: args{
+				id: uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+			},
+			want: &query.TaskQueryResult{
+				Result: &common.TaskResult{
+					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+					Name:        "Task One",
+					Description: "This is the first task",
+					StatusId:    1,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "abnormal",
+			fields: fields{
+				taskRepository: &MockTaskRepository{
+					tasks: []*entities.Task{
+						{
+							Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+							Name:        "Task One",
+							Description: "This is the first task",
+							StatusId:    1,
+							CreatedAt:   now,
+							UpdatedAt:   now,
+						},
+					},
+				},
+			},
+			args: args{
+				id: uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := &TaskService{
+				taskRepository: tt.fields.taskRepository,
+			}
+			got, err := ts.FindTaskById(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("TaskService.FindTaskById() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TaskService.FindTaskById() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTaskService_UpdateTask(t *testing.T) {
+	type fields struct {
+		taskRepository repositories.TaskRepository
+	}
+	type args struct {
+		updateCommand *command.UpdateTaskCommand
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *command.UpdateTaskCommandResult
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := &TaskService{
+				taskRepository: tt.fields.taskRepository,
+			}
+			got, err := ts.UpdateTask(tt.args.updateCommand)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("TaskService.UpdateTask() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TaskService.UpdateTask() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTaskService_DeleteTask(t *testing.T) {
+	type fields struct {
+		taskRepository repositories.TaskRepository
+	}
+	type args struct {
+		id uuid.UUID
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := &TaskService{
+				taskRepository: tt.fields.taskRepository,
+			}
+			if err := ts.DeleteTask(tt.args.id); (err != nil) != tt.wantErr {
+				t.Errorf("TaskService.DeleteTask() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

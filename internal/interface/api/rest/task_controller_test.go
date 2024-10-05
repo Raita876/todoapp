@@ -87,7 +87,7 @@ func TestNewTaskController(t *testing.T) {
 		want *TaskController
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				e:       gin.Default(),
 				service: mockTaskService,
@@ -154,7 +154,7 @@ func TestTaskController_GetAllTasksController(t *testing.T) {
 		args   args
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				service: mockService,
 			},
@@ -247,7 +247,7 @@ func TestTaskController_CreateTaskController(t *testing.T) {
 		args   args
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				service: mockService,
 			},

@@ -27,7 +27,7 @@ func TestTask_Validate(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
@@ -39,7 +39,7 @@ func TestTask_Validate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "abnomal",
+			name: "abnormal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "",
@@ -109,7 +109,7 @@ func TestTask_UpdateName(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
@@ -124,7 +124,7 @@ func TestTask_UpdateName(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "abnomal",
+			name: "abnormal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
@@ -175,7 +175,7 @@ func TestTask_UpdateDescription(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
@@ -190,7 +190,7 @@ func TestTask_UpdateDescription(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "abnomal",
+			name: "abnormal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
@@ -241,7 +241,7 @@ func TestTask_UpdateStatus(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",

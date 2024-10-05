@@ -56,7 +56,7 @@ func TestGormTaskRepository_FindAll(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			want: []*entities.Task{
 				{
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -109,7 +109,7 @@ func TestGormTaskRepository_Create(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				task: &entities.Task{
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -189,7 +189,7 @@ func TestGormTaskRepository_Update(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				task: &entities.Task{
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -255,7 +255,7 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				id: uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 			},
@@ -295,7 +295,7 @@ func TestGormTaskRepository_FindTaskById(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "nomal",
+			name: "normal",
 			args: args{
 				id: uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 			},
