@@ -31,7 +31,6 @@ func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskContr
 
 // @BasePath /api/v1
 
-// PingExample godoc
 // @Summary Get tasks
 // @Schemes http
 // @Description get tasks
@@ -39,6 +38,7 @@ func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskContr
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.ListTaskResponse
+// @Failure 500 {object} map[string]string
 // @Router /tasks [get]
 func (tc *TaskController) GetAllTasksController(c *gin.Context) {
 
@@ -55,7 +55,18 @@ func (tc *TaskController) GetAllTasksController(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// TODO: swagger 記載
+// @Summary Get task by id
+// @Schemes http
+// @Description Get task by id
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path string true "task id"
+// @Success 200 {object} response.TaskResponse
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /tasks/{id} [get]
 func (tc *TaskController) GetTaskByIdController(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -85,7 +96,17 @@ func (tc *TaskController) GetTaskByIdController(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// TODO: swagger 記載
+// @Summary Create task
+// @Schemes http
+// @Description Create task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param request body request.CreateTaskRequest true "request body"
+// @Success 201 {object} response.TaskResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /tasks [post]
 func (tc *TaskController) CreateTaskController(c *gin.Context) {
 	var createTaskRequest request.CreateTaskRequest
 
@@ -118,7 +139,17 @@ func (tc *TaskController) CreateTaskController(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-// TODO: swagger 記載
+// @Summary Update task
+// @Schemes http
+// @Description Update task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param request body request.UpdateTaskRequest true "request body"
+// @Success 200 {object} response.TaskResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /tasks [put]
 func (tc *TaskController) PutTaskController(c *gin.Context) {
 	var updateTaskRequest request.UpdateTaskRequest
 
@@ -150,8 +181,18 @@ func (tc *TaskController) PutTaskController(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// TODO: swagger 記載
+// @Summary Delete task
+// @Schemes http
+// @Description Delete task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param request body request.DeleteTaskRequest true "request body"
+// @Success 204
+// @Router /tasks [delete]
 func (tc *TaskController) DeleteTaskController(c *gin.Context) {
+	// TODO: @Failure 記述
+
 	var deleteTaskRequest request.DeleteTaskRequest
 
 	if err := c.Bind(&deleteTaskRequest); err != nil {

@@ -1,4 +1,29 @@
 definitions:
+  request.CreateTaskRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      status_id:
+        type: integer
+    type: object
+  request.DeleteTaskRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  request.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      status_id:
+        type: integer
+    type: object
   response.ListTaskResponse:
     properties:
       tasks:
@@ -25,6 +50,25 @@ info:
   contact: {}
 paths:
   /tasks:
+    delete:
+      consumes:
+      - application/json
+      description: Delete task
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.DeleteTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete task
+      tags:
+      - tasks
     get:
       consumes:
       - application/json
@@ -36,7 +80,118 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ListTaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Get tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create task
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update task
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update task
+      tags:
+      - tasks
+  /tasks/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get task by id
+      parameters:
+      - description: task id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get task by id
       tags:
       - tasks
 swagger: "2.0"
