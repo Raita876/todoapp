@@ -284,7 +284,7 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 	}
 }
 
-func TestGormTaskRepository_FindById(t *testing.T) {
+func TestGormTaskRepository_FindTaskById(t *testing.T) {
 	type args struct {
 		id uuid.UUID
 	}
@@ -326,13 +326,13 @@ func TestGormTaskRepository_FindById(t *testing.T) {
 			repo := &GormTaskRepository{
 				db: mockDB,
 			}
-			got, err := repo.FindById(tt.args.id)
+			got, err := repo.FindTaskById(tt.args.id)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GormTaskRepository.FindById() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GormTaskRepository.FindTaskById() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GormTaskRepository.FindById() = %v, want %v", got, tt.want)
+				t.Errorf("GormTaskRepository.FindTaskById() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -31,6 +31,7 @@
 
 - <http://localhost:8080/ping>
 - <http://localhost:8080/api/v1/tasks>
+- <http://localhost:8080/api/v1/tasks/b81240b0-7122-4d06-bdb2-8bcf512d6c63>
 - <http://localhost:8080/swagger/index.html>
 
 ## Command Example

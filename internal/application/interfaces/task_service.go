@@ -9,7 +9,7 @@ import (
 type TaskService interface {
 	CreateTask(taskCommand *command.CreateTaskCommand) (*command.CreateTaskCommandResult, error)
 	FindAllTasks() (*query.TaskQueryListResult, error)
-	FindById(id uuid.UUID) (*query.TaskQueryResult, error)
+	FindTaskById(id uuid.UUID) (*query.TaskQueryResult, error)
 	UpdateTask(updateCommand *command.UpdateTaskCommand) (*command.UpdateTaskCommandResult, error)
 	DeleteTask(id uuid.UUID) error
 }

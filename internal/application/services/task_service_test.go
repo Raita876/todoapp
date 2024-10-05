@@ -26,7 +26,7 @@ func (m *MockTaskRepository) FindAll() ([]*entities.Task, error) {
 	return m.tasks, nil
 }
 
-func (m *MockTaskRepository) FindById(id uuid.UUID) (*entities.Task, error) {
+func (m *MockTaskRepository) FindTaskById(id uuid.UUID) (*entities.Task, error) {
 	return m.tasks[0], nil
 }
 

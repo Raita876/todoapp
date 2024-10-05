@@ -36,8 +36,8 @@ func (ts *TaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 	return &taskQueryListResult, nil
 }
 
-func (ts *TaskService) FindById(id uuid.UUID) (*query.TaskQueryResult, error) {
-	task, err := ts.taskRepository.FindById(id)
+func (ts *TaskService) FindTaskById(id uuid.UUID) (*query.TaskQueryResult, error) {
+	task, err := ts.taskRepository.FindTaskById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (ts *TaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*comm
 }
 
 func (ts *TaskService) UpdateTask(updateCommand *command.UpdateTaskCommand) (*command.UpdateTaskCommandResult, error) {
-	task, err := ts.taskRepository.FindById(updateCommand.ID)
+	task, err := ts.taskRepository.FindTaskById(updateCommand.ID)
 	if err != nil {
 		return nil, err
 	}

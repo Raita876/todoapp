@@ -42,7 +42,7 @@ func (m *MockTaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 	return taskQueryListResult, args.Error(1)
 }
 
-func (m *MockTaskService) FindById(id uuid.UUID) (*query.TaskQueryResult, error) {
+func (m *MockTaskService) FindTaskById(id uuid.UUID) (*query.TaskQueryResult, error) {
 	// TODO
 
 	return nil, nil

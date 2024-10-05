@@ -30,7 +30,7 @@ func (repo *GormTaskRepository) FindAll() ([]*entities.Task, error) {
 	return tasks, nil
 }
 
-func (repo *GormTaskRepository) FindById(id uuid.UUID) (*entities.Task, error) {
+func (repo *GormTaskRepository) FindTaskById(id uuid.UUID) (*entities.Task, error) {
 	var dbTask Task
 	if err := repo.db.First(&dbTask, id).Error; err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (repo *GormTaskRepository) Update(task *entities.Task) (*entities.Task, err
 		return nil, err
 	}
 
-	return repo.FindById(dbTask.Id)
+	return repo.FindTaskById(dbTask.Id)
 }
 
 func (repo *GormTaskRepository) Delete(id uuid.UUID) error {
