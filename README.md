@@ -7,25 +7,28 @@
   - Rest API
 
 - 言語
-  - Go
+  - [Go](https://go.dev/)
 
 - ライブラリ
-  - gin
-  - gorm
+  - [gin](https://gin-gonic.com/)
+  - [gorm](https://gorm.io/)
+  - [urfave/cli](https://github.com/urfave/cli)
 
 - データベース
-  - postgreSQL
+  - [postgreSQL](https://www.postgresql.org/)
 
 - テスト
-  - gotests
-  - golangci
-  - runn
+  - [gotests](https://github.com/cweill/gotests)
+  - [golangci-lint](https://golangci-lint.run/)
+  - [runn](https://github.com/k1LoW/runn)
   
 - ドキュメント
-  - swagger
+  - [swagger](https://swagger.io/)
 
 - CI/CD
-  - goreleaser
+  - [github-actions](https://docs.github.com/ja/actions)
+  - [goreleaser](https://goreleaser.com/)
+  - [docker](https://www.docker.com/)
   
 ## API
 
