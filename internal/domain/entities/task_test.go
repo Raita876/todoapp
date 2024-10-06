@@ -272,3 +272,67 @@ func TestTask_UpdateStatus(t *testing.T) {
 		})
 	}
 }
+
+func TestEqualTask(t *testing.T) {
+	type args struct {
+		src *Task
+		dst *Task
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "normal_true",
+			args: args{
+				src: &Task{
+					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+					Name:        "Task One",
+					Description: "This is the first task",
+					StatusId:    1,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+				dst: &Task{
+					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+					Name:        "Task One",
+					Description: "This is the first task",
+					StatusId:    1,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+			},
+			want: true,
+		},
+		{
+			name: "normal_false",
+			args: args{
+				src: &Task{
+					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+					Name:        "Task One",
+					Description: "This is the first task",
+					StatusId:    1,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+				dst: &Task{
+					Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+					Name:        "Task Two",
+					Description: "This is the second task",
+					StatusId:    2,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := EqualTask(tt.args.src, tt.args.dst); got != tt.want {
+				t.Errorf("EqualTask() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
