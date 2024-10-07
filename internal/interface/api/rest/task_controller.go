@@ -189,6 +189,7 @@ func (tc *TaskController) PutTaskController(c *gin.Context) {
 // @Produce json
 // @Param request body request.DeleteTaskRequest true "request body"
 // @Success 204
+// @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /tasks [delete]
 func (tc *TaskController) DeleteTaskController(c *gin.Context) {
