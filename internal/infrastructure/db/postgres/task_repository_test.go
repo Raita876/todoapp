@@ -200,7 +200,7 @@ func TestGormTaskRepository_Update(t *testing.T) {
 			}
 
 			mock.ExpectBegin()
-			mock.ExpectExec("UPDATE \"tasks\"").
+			mock.ExpectExec(regexp.QuoteMeta(`UPDATE "tasks"`)).
 				WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectCommit()
 
