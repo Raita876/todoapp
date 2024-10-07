@@ -43,9 +43,22 @@ func (m *MockTaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
 }
 
 func (m *MockTaskService) FindTaskById(id uuid.UUID) (*query.TaskQueryResult, error) {
-	// TODO
+	args := m.Called(id)
 
-	return nil, nil
+	task := args.Get(0).(*entities.Task)
+
+	taskQueryResult := &query.TaskQueryResult{
+		Result: &common.TaskResult{
+			Id:          task.Id,
+			Name:        task.Name,
+			Description: task.Description,
+			StatusId:    task.StatusId,
+			CreatedAt:   task.CreatedAt,
+			UpdatedAt:   task.UpdatedAt,
+		},
+	}
+
+	return taskQueryResult, args.Error(1)
 }
 
 func (m *MockTaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*command.CreateTaskCommandResult, error) {
@@ -65,13 +78,28 @@ func (m *MockTaskService) CreateTask(taskCommand *command.CreateTaskCommand) (*c
 }
 
 func (m *MockTaskService) UpdateTask(updateCommand *command.UpdateTaskCommand) (*command.UpdateTaskCommandResult, error) {
-	// TODO
-	return nil, nil
+	args := m.Called(updateCommand)
+
+	task := args.Get(0).(*entities.Task)
+
+	updateTaskCommandResult := &command.UpdateTaskCommandResult{
+		Result: &common.TaskResult{
+			Id:          task.Id,
+			Name:        task.Name,
+			Description: task.Description,
+			StatusId:    task.StatusId,
+			CreatedAt:   task.CreatedAt,
+			UpdatedAt:   task.UpdatedAt,
+		},
+	}
+
+	return updateTaskCommandResult, args.Error(1)
 }
 
 func (m *MockTaskService) DeleteTask(id uuid.UUID) error {
-	// TODO
-	return nil
+	args := m.Called(id)
+
+	return args.Error(0)
 }
 
 func TestNewTaskController(t *testing.T) {
@@ -184,7 +212,7 @@ func TestTaskController_GetAllTasksController(t *testing.T) {
 	}
 }
 
-func equalCreateTaskCommandResult(got, want *response.TaskResponse) bool {
+func equalTaskResponse(got, want *response.TaskResponse) bool {
 	if got == nil && want == nil {
 		return true
 	}
@@ -202,7 +230,11 @@ func equalCreateTaskCommandResult(got, want *response.TaskResponse) bool {
 	return true
 }
 func TestTaskController_CreateTaskController(t *testing.T) {
-	reqBody := map[string]interface{}{"name": "Task One", "description": "This is the first task", "status_id": 1}
+	reqBody := map[string]interface{}{
+		"name":        "Task One",
+		"description": "This is the first task",
+		"status_id":   1,
+	}
 	reqBodyBytes, _ := json.Marshal(reqBody)
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/tasks", bytes.NewReader(reqBodyBytes))
 	req.Header.Set("Content-Type", "application/json")
@@ -270,8 +302,191 @@ func TestTaskController_CreateTaskController(t *testing.T) {
 				return
 			}
 
-			if !equalCreateTaskCommandResult(receivedResponse, expectedResponse) {
+			if !equalTaskResponse(receivedResponse, expectedResponse) {
 				t.Errorf("got %v, want %v", receivedResponse, expectedResponse)
+			}
+		})
+	}
+}
+
+func TestTaskController_GetTaskByIdController(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/tasks:id", nil)
+	rec := httptest.NewRecorder()
+	c, e := gin.CreateTestContext(rec)
+	c.Request = req
+	c.Params = []gin.Param{
+		{
+			Key:   "id",
+			Value: "b81240b0-7122-4d06-bdb2-8bcf512d6c63",
+		},
+	}
+
+	mockService := new(MockTaskService)
+
+	expectedTask := &entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
+	mockService.On("FindTaskById", mock.Anything).Return(expectedTask, nil)
+	ctrl := NewTaskController(e, mockService)
+
+	expectedResponse := &response.TaskResponse{
+		Id:          expectedTask.Id.String(),
+		Name:        expectedTask.Name,
+		Description: expectedTask.Description,
+		StatusId:    expectedTask.StatusId,
+		CreatedAt:   expectedTask.CreatedAt,
+		UpdatedAt:   expectedTask.UpdatedAt,
+	}
+
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "normal",
+			args: args{
+				c: c,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl.GetTaskByIdController(tt.args.c)
+			if rec.Code != http.StatusOK {
+				t.Errorf("rec.Code = %v, want %v", rec.Code, http.StatusOK)
+			}
+
+			var receivedResponse *response.TaskResponse
+			err := json.Unmarshal(rec.Body.Bytes(), &receivedResponse)
+			if err != nil {
+				t.Errorf("json.Unmarshal() error = %v", err)
+				return
+			}
+
+			if !equalTaskResponse(receivedResponse, expectedResponse) {
+				t.Errorf("got %v, want %v", receivedResponse, expectedResponse)
+			}
+		})
+	}
+}
+
+func TestTaskController_PutTaskController(t *testing.T) {
+	reqBody := map[string]interface{}{
+		"id":          "b81240b0-7122-4d06-bdb2-8bcf512d6c63",
+		"name":        "Updated task",
+		"description": "This is updated task",
+		"status_id":   2,
+	}
+	reqBodyBytes, _ := json.Marshal(reqBody)
+	req := httptest.NewRequest(http.MethodPut, "/api/v1/tasks", bytes.NewReader(reqBodyBytes))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c, e := gin.CreateTestContext(rec)
+	c.Request = req
+
+	mockService := new(MockTaskService)
+
+	expectedTask := &entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    2,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
+	ctrl := NewTaskController(e, mockService)
+	mockService.On("UpdateTask", mock.Anything).Return(expectedTask, nil)
+
+	expectedResponse := &response.TaskResponse{
+		Id:          expectedTask.Id.String(),
+		Name:        expectedTask.Name,
+		Description: expectedTask.Description,
+		StatusId:    expectedTask.StatusId,
+		CreatedAt:   expectedTask.CreatedAt,
+		UpdatedAt:   expectedTask.UpdatedAt,
+	}
+
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "normal",
+			args: args{
+				c: c,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl.PutTaskController(tt.args.c)
+			if rec.Code != http.StatusOK {
+				t.Errorf("rec.Code = %v, want %v", rec.Code, http.StatusOK)
+			}
+
+			var receivedResponse *response.TaskResponse
+			err := json.Unmarshal(rec.Body.Bytes(), &receivedResponse)
+			if err != nil {
+				t.Errorf("json.Unmarshal() error = %v", err)
+				return
+			}
+
+			if !equalTaskResponse(receivedResponse, expectedResponse) {
+				t.Errorf("got %v, want %v", receivedResponse, expectedResponse)
+			}
+		})
+	}
+}
+
+func TestTaskController_DeleteTaskController(t *testing.T) {
+	reqBody := map[string]interface{}{
+		"id": "b81240b0-7122-4d06-bdb2-8bcf512d6c63",
+	}
+	reqBodyBytes, _ := json.Marshal(reqBody)
+	req := httptest.NewRequest(http.MethodDelete, "/api/v1/tasks", bytes.NewReader(reqBodyBytes))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c, e := gin.CreateTestContext(rec)
+	c.Request = req
+
+	mockService := new(MockTaskService)
+
+	ctrl := NewTaskController(e, mockService)
+	mockService.On("DeleteTask", mock.Anything).Return(nil)
+
+	type args struct {
+		c *gin.Context
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "normal",
+			args: args{
+				c: c,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl.DeleteTaskController(tt.args.c)
+			if rec.Code != http.StatusNoContent {
+				t.Log(rec)
+				t.Errorf("rec.Code = %v, want %v", rec.Code, http.StatusNoContent)
 			}
 		})
 	}

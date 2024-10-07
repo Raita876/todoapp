@@ -210,5 +210,5 @@ func (tc *TaskController) DeleteTaskController(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusNoContent, nil)
 }
