@@ -1,7 +1,6 @@
 package entities
 
 import (
-	"reflect"
 	"testing"
 	"time"
 
@@ -79,12 +78,31 @@ func TestNewTask(t *testing.T) {
 		args args
 		want *Task
 	}{
-		// TODO: Add test cases.
+		{
+			name: "normal",
+			args: args{
+				name:        "Task One",
+				description: "This is the first task",
+				statusId:    1,
+			},
+			want: &Task{
+				Name:        "Task One",
+				Description: "This is the first task",
+				StatusId:    1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTask(tt.args.name, tt.args.description, tt.args.statusId); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewTask() = %v, want %v", got, tt.want)
+			got := NewTask(tt.args.name, tt.args.description, tt.args.statusId)
+			if got.Name != tt.want.Name {
+				t.Errorf("got = %v, want %v", got.Name, tt.want.Name)
+			}
+			if got.Description != tt.want.Description {
+				t.Errorf("got = %v, want %v", got.Description, tt.want.Description)
+			}
+			if got.StatusId != tt.want.StatusId {
+				t.Errorf("got = %v, want %v", got.StatusId, tt.want.StatusId)
 			}
 		})
 	}
