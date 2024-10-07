@@ -1,9 +1,7 @@
 package main
 
 import (
-	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -35,29 +33,26 @@ func main() {
 		Name:      name,
 		Usage:     "This is a REST API for task management.",
 		UsageText: "todoappserver [OPTION]...",
-		Flags:     []cli.Flag{},
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "dsn",
+				Aliases: []string{"d"},
+				Value:   "host=localhost user=postgres password=postgres dbname=todoapp_db port=5432 sslmode=disable TimeZone=Asia/Tokyo",
+				Usage:   "specify data source name",
+			},
+			&cli.StringFlag{
+				Name:    "addr",
+				Aliases: []string{"a"},
+				Value:   "0.0.0.0:8080",
+				Usage:   "",
+			},
+		},
 		Action: func(ctx *cli.Context) error {
 			gin.DisableConsoleColor()
+			r := gin.Default()
 
-			// TODO: パラメータで制御
-			f, err := os.OpenFile("todoappserver.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-			if err != nil {
-				return err
-			}
-			gin.DefaultWriter = io.MultiWriter(f)
-
-			e := gin.Default()
-			e.GET("/ping", func(c *gin.Context) {
-				c.JSON(http.StatusOK, gin.H{
-					"message": "ok",
-				})
-			})
-
-			// TODO: flag or config file で制御
-			dsn := "host=localhost user=postgres password=postgres dbname=todoapp_db port=5432 sslmode=disable TimeZone=Asia/Tokyo"
-
-			// TODO: flag で制御
-			port := ":8080"
+			dsn := ctx.String("dsn")
+			addr := ctx.String("addr")
 
 			gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 			if err != nil {
@@ -68,12 +63,12 @@ func main() {
 
 			taskService := services.NewTaskService(taskRepo)
 
-			rest.NewTaskController(e, taskService)
+			rest.NewTaskController(r, taskService)
 
 			docs.SwaggerInfo.BasePath = "/api/v1"
-			e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+			r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-			return e.Run(port)
+			return r.Run(addr)
 		},
 	}
 

@@ -15,16 +15,16 @@ type TaskController struct {
 	service interfaces.TaskService
 }
 
-func NewTaskController(e *gin.Engine, service interfaces.TaskService) *TaskController {
+func NewTaskController(r *gin.Engine, service interfaces.TaskService) *TaskController {
 	c := &TaskController{
 		service: service,
 	}
 
-	e.GET("/api/v1/tasks", c.GetAllTasksController)
-	e.GET("/api/v1/tasks/:id", c.GetTaskByIdController)
-	e.POST("/api/v1/tasks", c.CreateTaskController)
-	e.PUT("/api/v1/tasks", c.PutTaskController)
-	e.DELETE("/api/v1/tasks", c.DeleteTaskController)
+	r.GET("/api/v1/tasks", c.GetAllTasksController)
+	r.GET("/api/v1/tasks/:id", c.GetTaskByIdController)
+	r.POST("/api/v1/tasks", c.CreateTaskController)
+	r.PUT("/api/v1/tasks", c.PutTaskController)
+	r.DELETE("/api/v1/tasks", c.DeleteTaskController)
 
 	return c
 }
@@ -189,10 +189,9 @@ func (tc *TaskController) PutTaskController(c *gin.Context) {
 // @Produce json
 // @Param request body request.DeleteTaskRequest true "request body"
 // @Success 204
+// @Failure 500 {object} map[string]string
 // @Router /tasks [delete]
 func (tc *TaskController) DeleteTaskController(c *gin.Context) {
-	// TODO: @Failure 記述
-
 	var deleteTaskRequest request.DeleteTaskRequest
 
 	if err := c.Bind(&deleteTaskRequest); err != nil {
