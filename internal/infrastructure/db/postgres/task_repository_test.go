@@ -250,6 +250,12 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 				t.Errorf("Failed to initialize mock DB: %v", err)
 			}
 
+			rows := sqlmock.NewRows([]string{"id", "name", "description", "status_id", "created_at", "updated_at"}).
+				AddRow(uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"), "Task One", "This is the first task", 1, now, now)
+			mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "tasks"`)).
+				WithArgs(uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"), 1).
+				WillReturnRows(rows)
+
 			mock.ExpectBegin()
 			mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "tasks"`)).
 				WillReturnResult(sqlmock.NewResult(1, 1))

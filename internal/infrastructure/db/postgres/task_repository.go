@@ -60,6 +60,11 @@ func (repo *GormTaskRepository) Update(task *entities.Task) (*entities.Task, err
 }
 
 func (repo *GormTaskRepository) Delete(id uuid.UUID) error {
-	// TODO: id で検索して存在しない場合はエラー
+	// id で検索して存在しない場合はエラー
+	_, err := repo.FindTaskById(id)
+	if err != nil {
+		return err
+	}
+
 	return repo.db.Delete(&Task{}, id).Error
 }

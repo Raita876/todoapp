@@ -204,7 +204,7 @@ func (tc *TaskController) DeleteTaskController(c *gin.Context) {
 
 	err := tc.service.DeleteTask(deleteTaskRequest.ID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, map[string]string{
+		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": "Failed to delete task",
 		})
 		return

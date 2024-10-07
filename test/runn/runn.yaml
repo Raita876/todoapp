@@ -84,12 +84,12 @@ steps:
               id: "07aaadbc-8967-406f-aebd-58b289377aef"
     test: |
       steps.delete_task.res.status == 204
-  delete_task_not_found: # TODO: 存在しない id が指定された場合はエラーを返却する
+  delete_task_not_found:
     req:
       /tasks:
         delete:
           body:
             application/json:
-              id: "07aaadbc-8967-406f-aebd-58b289377aef"
+              id: "d9cfcbfe-d086-4049-8f10-96eefd320042"
     test: |
-      steps.delete_task_not_found.res.status == 204
+      steps.delete_task_not_found.res.status == 500
