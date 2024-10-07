@@ -251,7 +251,7 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 			}
 
 			mock.ExpectBegin()
-			mock.ExpectExec("DELETE FROM \"tasks\"").
+			mock.ExpectExec(regexp.QuoteMeta(`DELETE FROM "tasks"`)).
 				WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectCommit()
 
