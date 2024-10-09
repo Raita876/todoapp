@@ -16,7 +16,7 @@ func TestTask_Validate(t *testing.T) {
 		Id          uuid.UUID
 		Name        string
 		Description string
-		StatusId    int
+		Status      Status
 		CreatedAt   time.Time
 		UpdatedAt   time.Time
 	}
@@ -31,21 +31,42 @@ func TestTask_Validate(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			wantErr: false,
 		},
 		{
-			name: "abnormal",
+			name: "abnormal name empty",
 			fields: fields{
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			wantErr: true,
+		},
+		{
+			name: "abnormal status empty",
+			fields: fields{
+				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+				Name:        "Task One",
+				Description: "This is the first task",
+				Status: Status{
+					Id:   1,
+					Name: "",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			wantErr: true,
 		},
@@ -56,7 +77,7 @@ func TestTask_Validate(t *testing.T) {
 				Id:          tt.fields.Id,
 				Name:        tt.fields.Name,
 				Description: tt.fields.Description,
-				StatusId:    tt.fields.StatusId,
+				Status:      tt.fields.Status,
 				CreatedAt:   tt.fields.CreatedAt,
 				UpdatedAt:   tt.fields.UpdatedAt,
 			}
@@ -67,53 +88,12 @@ func TestTask_Validate(t *testing.T) {
 	}
 }
 
-func TestNewTask(t *testing.T) {
-	type args struct {
-		name        string
-		description string
-		statusId    int
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Task
-	}{
-		{
-			name: "normal",
-			args: args{
-				name:        "Task One",
-				description: "This is the first task",
-				statusId:    1,
-			},
-			want: &Task{
-				Name:        "Task One",
-				Description: "This is the first task",
-				StatusId:    1,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := NewTask(tt.args.name, tt.args.description, tt.args.statusId)
-			if got.Name != tt.want.Name {
-				t.Errorf("got = %v, want %v", got.Name, tt.want.Name)
-			}
-			if got.Description != tt.want.Description {
-				t.Errorf("got = %v, want %v", got.Description, tt.want.Description)
-			}
-			if got.StatusId != tt.want.StatusId {
-				t.Errorf("got = %v, want %v", got.StatusId, tt.want.StatusId)
-			}
-		})
-	}
-}
-
 func TestTask_UpdateName(t *testing.T) {
 	type fields struct {
 		Id          uuid.UUID
 		Name        string
 		Description string
-		StatusId    int
+		Status      Status
 		CreatedAt   time.Time
 		UpdatedAt   time.Time
 	}
@@ -132,9 +112,12 @@ func TestTask_UpdateName(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			args: args{
 				name: "Updated task",
@@ -147,9 +130,12 @@ func TestTask_UpdateName(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			args: args{
 				name: "",
@@ -163,7 +149,7 @@ func TestTask_UpdateName(t *testing.T) {
 				Id:          tt.fields.Id,
 				Name:        tt.fields.Name,
 				Description: tt.fields.Description,
-				StatusId:    tt.fields.StatusId,
+				Status:      tt.fields.Status,
 				CreatedAt:   tt.fields.CreatedAt,
 				UpdatedAt:   tt.fields.UpdatedAt,
 			}
@@ -179,7 +165,7 @@ func TestTask_UpdateDescription(t *testing.T) {
 		Id          uuid.UUID
 		Name        string
 		Description string
-		StatusId    int
+		Status      Status
 		CreatedAt   time.Time
 		UpdatedAt   time.Time
 	}
@@ -198,9 +184,12 @@ func TestTask_UpdateDescription(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			args: args{
 				description: "Updated description",
@@ -213,9 +202,12 @@ func TestTask_UpdateDescription(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			args: args{
 				description: "",
@@ -229,9 +221,12 @@ func TestTask_UpdateDescription(t *testing.T) {
 				Id:          tt.fields.Id,
 				Name:        tt.fields.Name,
 				Description: tt.fields.Description,
-				StatusId:    tt.fields.StatusId,
-				CreatedAt:   tt.fields.CreatedAt,
-				UpdatedAt:   tt.fields.UpdatedAt,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: tt.fields.CreatedAt,
+				UpdatedAt: tt.fields.UpdatedAt,
 			}
 			if err := tr.UpdateDescription(tt.args.description); (err != nil) != tt.wantErr {
 				t.Errorf("Task.UpdateDescription() error = %v, wantErr %v", err, tt.wantErr)
@@ -245,12 +240,12 @@ func TestTask_UpdateStatus(t *testing.T) {
 		Id          uuid.UUID
 		Name        string
 		Description string
-		StatusId    int
+		Status      Status
 		CreatedAt   time.Time
 		UpdatedAt   time.Time
 	}
 	type args struct {
-		statusId int
+		status Status
 	}
 	tests := []struct {
 		name    string
@@ -264,12 +259,18 @@ func TestTask_UpdateStatus(t *testing.T) {
 				Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 				Name:        "Task One",
 				Description: "This is the first task",
-				StatusId:    1,
-				CreatedAt:   now,
-				UpdatedAt:   now,
+				Status: Status{
+					Id:   1,
+					Name: "InProgress",
+				},
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			args: args{
-				statusId: 2,
+				status: Status{
+					Id:   2,
+					Name: "Completed",
+				},
 			},
 			wantErr: false,
 		},
@@ -280,11 +281,11 @@ func TestTask_UpdateStatus(t *testing.T) {
 				Id:          tt.fields.Id,
 				Name:        tt.fields.Name,
 				Description: tt.fields.Description,
-				StatusId:    tt.fields.StatusId,
+				Status:      tt.fields.Status,
 				CreatedAt:   tt.fields.CreatedAt,
 				UpdatedAt:   tt.fields.UpdatedAt,
 			}
-			if err := tr.UpdateStatus(tt.args.statusId); (err != nil) != tt.wantErr {
+			if err := tr.UpdateStatus(tt.args.status); (err != nil) != tt.wantErr {
 				t.Errorf("Task.UpdateStatus() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -308,17 +309,23 @@ func TestEqualTask(t *testing.T) {
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 					Name:        "Task One",
 					Description: "This is the first task",
-					StatusId:    1,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					Status: Status{
+						Id:   1,
+						Name: "InProgress",
+					},
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 				dst: &Task{
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 					Name:        "Task One",
 					Description: "This is the first task",
-					StatusId:    1,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					Status: Status{
+						Id:   1,
+						Name: "InProgress",
+					},
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 			},
 			want: true,
@@ -330,17 +337,23 @@ func TestEqualTask(t *testing.T) {
 					Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
 					Name:        "Task One",
 					Description: "This is the first task",
-					StatusId:    1,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					Status: Status{
+						Id:   1,
+						Name: "InProgress",
+					},
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 				dst: &Task{
 					Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
 					Name:        "Task Two",
 					Description: "This is the second task",
-					StatusId:    2,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					Status: Status{
+						Id:   2,
+						Name: "Completed",
+					},
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 			},
 			want: false,

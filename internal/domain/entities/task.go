@@ -7,11 +7,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type Status struct {
+	Id   int
+	Name string
+}
+
 type Task struct {
 	Id          uuid.UUID
 	Name        string
 	Description string
-	StatusId    int
+	Status      Status
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -26,19 +31,11 @@ func (t *Task) Validate() error {
 	if t.CreatedAt.After(t.UpdatedAt) {
 		return errors.New("created_at must be before updated_at")
 	}
+	if t.Status.Name == "" {
+		return errors.New("status_id must not be empty")
+	}
 
 	return nil
-}
-
-func NewTask(name, description string, statusId int) *Task {
-	return &Task{
-		Id:          uuid.New(),
-		Name:        name,
-		Description: description,
-		StatusId:    statusId,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
 }
 
 func (t *Task) UpdateName(name string) error {
@@ -55,8 +52,8 @@ func (t *Task) UpdateDescription(description string) error {
 	return t.Validate()
 }
 
-func (t *Task) UpdateStatus(statusId int) error {
-	t.StatusId = statusId
+func (t *Task) UpdateStatus(status Status) error {
+	t.Status = status
 	t.UpdatedAt = time.Now()
 
 	return t.Validate()
@@ -73,7 +70,7 @@ func EqualTask(src, dst *Task) bool {
 
 	if src.Name != dst.Name ||
 		src.Description != dst.Description ||
-		src.StatusId != dst.StatusId {
+		src.Status != dst.Status {
 		return false
 	}
 
