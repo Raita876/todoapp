@@ -2,7 +2,32 @@ CREATE DATABASE todoapp_db;
 
 \c todoapp_db
 
+DROP TABLE IF EXISTS task_status;
 DROP TABLE IF EXISTS tasks;
+
+CREATE TABLE task_status (
+    id integer PRIMARY KEY NOT NULL UNIQUE,
+    name varchar(64) NOT NULL
+);
+
+INSERT INTO
+    task_status (
+        id,
+        name
+    )
+VALUES
+    (
+        0,
+        'Pending'
+    ),
+    (
+        1,
+        'In Progress'
+    ),
+    (
+        2,
+        'Completed'
+    );
 
 CREATE TABLE tasks (
     id uuid PRIMARY KEY NOT NULL UNIQUE,
