@@ -1,4 +1,4 @@
-package postgre
+package postgres
 
 import "github.com/raita876/todoapp/internal/domain/entities"
 
