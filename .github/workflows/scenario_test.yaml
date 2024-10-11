@@ -56,4 +56,6 @@ jobs:
           mv /tmp/runn /usr/local/bin/
 
       - name: run scenario test
+        env: 
+          TODOAPP_BIN: ./dist/todoapp_linux_amd64_v1/todoappserver
         run: make up run scenariotest

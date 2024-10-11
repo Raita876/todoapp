@@ -2,6 +2,8 @@ export VERSION ?= $(shell cat ./VERSION)
 export PGPASSWORD = postgres
 export GIN_MODE = release
 
+TODOAPP_BIN ?= ./dist/todoapp_darwin_arm64/todoappserver
+
 .PHONY: build
 build:
 	goreleaser release --snapshot --clean
@@ -31,7 +33,7 @@ gotests:
 
 .PHONY: run
 run: swag build
-	./dist/todoapp_linux_amd64_v1/todoappserver &
+	$(TODOAPP_BIN) &
 
 .PHONY: stop
 stop:
