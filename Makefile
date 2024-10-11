@@ -28,7 +28,6 @@ gotests:
 	gotests -all -w \
 		./internal/application/services/task_service.go \
 		./internal/domain/entities/task.go \
-		./internal/infrastructure/db/postgres/task_repository.go \
 		./internal/interface/api/rest/task_controller.go
 
 .PHONY: run

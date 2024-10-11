@@ -345,6 +345,29 @@ func TestEqualTask(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "normal_src_is_nil",
+			args: args{
+				src: nil,
+				dst: &Task{
+					Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+					Name:        "Task Two",
+					Description: "This is the second task",
+					StatusId:    2,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+			},
+			want: false,
+		},
+		{
+			name: "normal_src_and_dst_is_nil",
+			args: args{
+				src: nil,
+				dst: nil,
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

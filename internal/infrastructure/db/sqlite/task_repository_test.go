@@ -146,6 +146,43 @@ func TestGormTaskRepository_Update(t *testing.T) {
 	}
 }
 
+func TestGormTaskRepository_Update_Error(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := postgres.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Errorf("failed create task: %s", err)
+	}
+
+	// not found
+	task := &entities.Task{
+		Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+		Name:        "Updated Task",
+		Description: "This is updated task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
+	_, err = repo.Update(task)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		t.Errorf("not found error should be returned: %s", err)
+	}
+}
+
 func TestGormTaskRepository_Delete(t *testing.T) {
 	database, cleanup, err := setupDatabase()
 	if err != nil {
@@ -170,6 +207,34 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 	err = repo.Delete(uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"))
 	if err != nil {
 		t.Errorf("failed delete task: %s", err)
+	}
+}
+
+func TestGormTaskRepository_Delete_Error(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := postgres.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Errorf("failed create task: %s", err)
+	}
+
+	// not found
+	err = repo.Delete(uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"))
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		t.Errorf("not found error should be returned: %s", err)
 	}
 }
 
@@ -201,5 +266,33 @@ func TestGormTaskRepository_FindTaskById(t *testing.T) {
 
 	if !cmp.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+func TestGormTaskRepository_FindTaskById_Error(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := postgres.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Errorf("failed create task: %s", err)
+	}
+
+	// not found
+	_, err = repo.FindTaskById(uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"))
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		t.Errorf("not found error should be returned: %s", err)
 	}
 }
