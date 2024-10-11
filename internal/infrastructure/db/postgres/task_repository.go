@@ -1,4 +1,4 @@
-package postgre
+package postgres
 
 import (
 	"github.com/google/uuid"
@@ -32,7 +32,7 @@ func (repo *GormTaskRepository) FindAll() ([]*entities.Task, error) {
 
 func (repo *GormTaskRepository) FindTaskById(id uuid.UUID) (*entities.Task, error) {
 	var dbTask Task
-	if err := repo.db.First(&dbTask, id).Error; err != nil {
+	if err := repo.db.Preload("Status").First(&dbTask, id).Error; err != nil {
 		return nil, err
 	}
 
@@ -51,7 +51,7 @@ func (repo *GormTaskRepository) Create(task *entities.Task) (*entities.Task, err
 
 func (repo *GormTaskRepository) Update(task *entities.Task) (*entities.Task, error) {
 	dbTask := toDBTask(task)
-	err := repo.db.Model(&task).Where("id = ?", dbTask.Id).Updates(dbTask).Error
+	err := repo.db.Model(&dbTask).Where("id = ?", dbTask.Id).Updates(dbTask).Error
 	if err != nil {
 		return nil, err
 	}

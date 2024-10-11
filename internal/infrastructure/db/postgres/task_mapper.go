@@ -1,4 +1,4 @@
-package postgre
+package postgres
 
 import "github.com/raita876/todoapp/internal/domain/entities"
 
@@ -7,9 +7,13 @@ func toDBTask(task *entities.Task) *Task {
 		Id:          task.Id,
 		Name:        task.Name,
 		Description: task.Description,
-		StatusId:    task.StatusId,
-		CreatedAt:   task.CreatedAt,
-		UpdatedAt:   task.UpdatedAt,
+		StatusId:    task.Status.Id,
+		Status: Status{
+			Id:   task.Status.Id,
+			Name: task.Status.Name,
+		},
+		CreatedAt: task.CreatedAt,
+		UpdatedAt: task.UpdatedAt,
 	}
 }
 
@@ -18,8 +22,11 @@ func fromDBTask(dbTask *Task) *entities.Task {
 		Id:          dbTask.Id,
 		Name:        dbTask.Name,
 		Description: dbTask.Description,
-		StatusId:    dbTask.StatusId,
-		CreatedAt:   dbTask.CreatedAt,
-		UpdatedAt:   dbTask.UpdatedAt,
+		Status: entities.Status{
+			Id:   dbTask.Status.Id,
+			Name: dbTask.Status.Name,
+		},
+		CreatedAt: dbTask.CreatedAt,
+		UpdatedAt: dbTask.UpdatedAt,
 	}
 }
