@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 	"github.com/raita876/todoapp/internal/domain/entities"
-	"github.com/raita876/todoapp/internal/infrastructure/db/postgres"
+	"github.com/raita876/todoapp/internal/infrastructure/db/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -23,7 +23,7 @@ func setupDatabase() (*gorm.DB, func(), error) {
 		return nil, nil, errors.New("Failed to connect to database")
 	}
 
-	err = database.AutoMigrate(&postgres.Task{})
+	err = database.AutoMigrate(&mysql.Task{})
 	if err != nil {
 		return nil, nil, errors.New("Failed to migrate database")
 	}
@@ -42,7 +42,7 @@ func TestGormTaskRepository_FindAll(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -81,7 +81,7 @@ func TestGormTaskRepository_Create(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -103,7 +103,7 @@ func TestGormTaskRepository_Update(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -153,7 +153,7 @@ func TestGormTaskRepository_Update_Error(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -190,7 +190,7 @@ func TestGormTaskRepository_Delete(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -217,7 +217,7 @@ func TestGormTaskRepository_Delete_Error(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -245,7 +245,7 @@ func TestGormTaskRepository_FindTaskById(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	want, err := repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
@@ -276,7 +276,7 @@ func TestGormTaskRepository_FindTaskById_Error(t *testing.T) {
 	}
 	defer cleanup()
 
-	repo := postgres.NewGormTaskRepository(database)
+	repo := mysql.NewGormTaskRepository(database)
 
 	_, err = repo.Create(&entities.Task{
 		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),

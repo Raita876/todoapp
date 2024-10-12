@@ -62,6 +62,7 @@ scenariotest:
 .PHONY: up
 up:
 	docker compose -f ./deployments/compose.yaml up -d
+	sleep 10
 
 .PHONY: down
 down:
@@ -70,3 +71,7 @@ down:
 .PHONY: psql
 psql:
 	psql -h localhost -p 5432 -U postgres
+
+.PHONY: mysql
+mysql:
+	mysql -h 127.0.0.1 -P 3306 -umysql -pmysql

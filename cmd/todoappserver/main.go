@@ -7,12 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/raita876/todoapp/docs"
 	"github.com/raita876/todoapp/internal/application/services"
-	postgres2 "github.com/raita876/todoapp/internal/infrastructure/db/postgres"
+	mysql2 "github.com/raita876/todoapp/internal/infrastructure/db/mysql"
 	"github.com/raita876/todoapp/internal/interface/api/rest"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/urfave/cli/v2"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +37,7 @@ func main() {
 			&cli.StringFlag{
 				Name:    "dsn",
 				Aliases: []string{"d"},
-				Value:   "host=localhost user=postgres password=postgres dbname=todoapp_db port=5432 sslmode=disable TimeZone=Asia/Tokyo",
+				Value:   "mysql:mysql@tcp(127.0.0.1:3306)/todoapp_db?charset=utf8mb4&parseTime=True&loc=Local",
 				Usage:   "specify data source name",
 			},
 			&cli.StringFlag{
@@ -54,12 +54,12 @@ func main() {
 			dsn := ctx.String("dsn")
 			addr := ctx.String("addr")
 
-			gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+			gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 			if err != nil {
 				return err
 			}
 
-			taskRepo := postgres2.NewGormTaskRepository(gormDB)
+			taskRepo := mysql2.NewGormTaskRepository(gormDB)
 
 			taskService := services.NewTaskService(taskRepo)
 
