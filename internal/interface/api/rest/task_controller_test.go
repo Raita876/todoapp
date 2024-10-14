@@ -30,7 +30,7 @@ type MockTaskService struct {
 	mock.Mock
 }
 
-func (m *MockTaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
+func (m *MockTaskService) FindAllTasks(tasksCommand *command.FindAllTasksCommand) (*query.TaskQueryListResult, error) {
 	args := m.Called()
 
 	taskQueryListResult := &query.TaskQueryListResult{}

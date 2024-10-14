@@ -7,7 +7,7 @@ import (
 
 type TaskRepository interface {
 	Create(task *entities.Task) (*entities.Task, error)
-	FindAll() ([]*entities.Task, error)
+	FindAll(containsForName string, filterStatusId int, sortBy string, orderIsAsc bool) ([]*entities.Task, error)
 	FindTaskById(id uuid.UUID) (*entities.Task, error)
 	Update(task *entities.Task) (*entities.Task, error)
 	Delete(id uuid.UUID) error

@@ -23,7 +23,7 @@ type MockTaskRepository struct {
 	tasks []*entities.Task
 }
 
-func (m *MockTaskRepository) FindAll() ([]*entities.Task, error) {
+func (m *MockTaskRepository) FindAll(containsForName string, filterStatusId int, sortBy string, orderIsAsc bool) ([]*entities.Task, error) {
 	return m.tasks, nil
 }
 
@@ -115,9 +115,13 @@ func TestTaskService_FindAllTasks(t *testing.T) {
 	type fields struct {
 		taskRepository repositories.TaskRepository
 	}
+	type args struct {
+		taskCommand *command.FindAllTasksCommand
+	}
 	tests := []struct {
 		name    string
 		fields  fields
+		args    args
 		want    *query.TaskQueryListResult
 		wantErr bool
 	}{
@@ -134,7 +138,31 @@ func TestTaskService_FindAllTasks(t *testing.T) {
 							CreatedAt:   now,
 							UpdatedAt:   now,
 						},
+						{
+							Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+							Name:        "Task Two",
+							Description: "This is the second task",
+							StatusId:    2,
+							CreatedAt:   now,
+							UpdatedAt:   now,
+						},
+						{
+							Id:          uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef"),
+							Name:        "Task Three",
+							Description: "This is the third task",
+							StatusId:    3,
+							CreatedAt:   now,
+							UpdatedAt:   now,
+						},
 					},
+				},
+			},
+			args: args{
+				taskCommand: &command.FindAllTasksCommand{
+					ContainsForName: "",
+					FilterStatusId:  -1,
+					SortBy:          "updated_at",
+					OrderIsAsc:      false,
 				},
 			},
 			want: &query.TaskQueryListResult{
@@ -144,6 +172,22 @@ func TestTaskService_FindAllTasks(t *testing.T) {
 						Name:        "Task One",
 						Description: "This is the first task",
 						StatusId:    1,
+						CreatedAt:   now,
+						UpdatedAt:   now,
+					},
+					{
+						Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+						Name:        "Task Two",
+						Description: "This is the second task",
+						StatusId:    2,
+						CreatedAt:   now,
+						UpdatedAt:   now,
+					},
+					{
+						Id:          uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef"),
+						Name:        "Task Three",
+						Description: "This is the third task",
+						StatusId:    3,
 						CreatedAt:   now,
 						UpdatedAt:   now,
 					},
@@ -157,7 +201,7 @@ func TestTaskService_FindAllTasks(t *testing.T) {
 			ts := &TaskService{
 				taskRepository: tt.fields.taskRepository,
 			}
-			got, err := ts.FindAllTasks()
+			got, err := ts.FindAllTasks(tt.args.taskCommand)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("TaskService.FindAllTasks() error = %v, wantErr %v", err, tt.wantErr)
 				return

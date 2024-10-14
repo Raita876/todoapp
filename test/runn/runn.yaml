@@ -11,6 +11,57 @@ steps:
     test: |
       steps.get_tasks.res.status == 200
       && len(steps.get_tasks.res.body.tasks) == 5
+  get_tasks_with_name:
+    req:
+      /tasks?name=Three:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_tasks_with_name.res.status == 200
+      && len(steps.get_tasks_with_name.res.body.tasks) == 1
+      && steps.get_tasks_with_name.res.body.tasks[0].id == "07aaadbc-8967-406f-aebd-58b289377aef"
+  get_tasks_with_status_id:
+    req:
+      /tasks?status_id=1:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_tasks_with_status_id.res.status == 200
+      && len(steps.get_tasks_with_status_id.res.body.tasks) == 2
+      && steps.get_tasks_with_status_id.res.body.tasks[0].id == "b81240b0-7122-4d06-bdb2-8bcf512d6c63"
+      && steps.get_tasks_with_status_id.res.body.tasks[1].id == "07aaadbc-8967-406f-aebd-58b289377aef"
+  get_tasks_error_with_status_id:
+    req:
+      /tasks?status_id=invalid:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_tasks_error_with_status_id.res.status == 400
+  get_tasks_with_sort_by_and_order:
+    req:
+      /tasks?sort_by=updated_at&order=desc:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_tasks_with_sort_by_and_order.res.status == 200
+      && len(steps.get_tasks_with_sort_by_and_order.res.body.tasks) == 5
+      && steps.get_tasks_with_sort_by_and_order.res.body.tasks[0].id == "b5e93ba4-ce33-4e36-83cb-c71177464a25"
+      && steps.get_tasks_with_sort_by_and_order.res.body.tasks[1].id == "8b119430-438b-40d1-a28d-3d11d6afcfba"
+      && steps.get_tasks_with_sort_by_and_order.res.body.tasks[2].id == "07aaadbc-8967-406f-aebd-58b289377aef"
+      && steps.get_tasks_with_sort_by_and_order.res.body.tasks[3].id == "fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"
+      && steps.get_tasks_with_sort_by_and_order.res.body.tasks[4].id == "b81240b0-7122-4d06-bdb2-8bcf512d6c63"
+  get_tasks_error_with_sort_by_and_order:
+    req:
+      /tasks?sort_by=invalid&order=desc:
+        get:
+          body:
+            application/json: null
+    test: |
+      steps.get_tasks_error_with_sort_by_and_order.res.status == 500    
   get_task_by_id:
     req:
       /tasks/b81240b0-7122-4d06-bdb2-8bcf512d6c63:

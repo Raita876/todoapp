@@ -68,9 +68,202 @@ func TestGormTaskRepository_FindAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tasks, err := repo.FindAll()
+	containsForName := ""
+	filterStatusId := -1
+	sortBy := "updated_at"
+	orderIsAsc := true
+
+	tasks, err := repo.FindAll(containsForName, filterStatusId, sortBy, orderIsAsc)
 	if err != nil || len(tasks) != 2 {
 		t.Error("Error fetching all tasks or count mismatch")
+	}
+}
+
+func TestGormTaskRepository_FindAll_ContainsForName(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := mysql.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+		Name:        "Task Two",
+		Description: "This is the second task",
+		StatusId:    2,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef"),
+		Name:        "Task Three",
+		Description: "This is the third task",
+		StatusId:    3,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	containsForName := "Three"
+	filterStatusId := -1
+	sortBy := "updated_at"
+	orderIsAsc := true
+
+	tasks, err := repo.FindAll(containsForName, filterStatusId, sortBy, orderIsAsc)
+	if err != nil || len(tasks) != 1 {
+		t.Error("Error fetching all tasks or count mismatch")
+	}
+
+	if tasks[0].Id != uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef") {
+		t.Error("An unexpected id was returned")
+	}
+}
+
+func TestGormTaskRepository_FindAll_FilterStatusId(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := mysql.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+		Name:        "Task Two",
+		Description: "This is the second task",
+		StatusId:    2,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef"),
+		Name:        "Task Three",
+		Description: "This is the third task",
+		StatusId:    3,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	containsForName := ""
+	filterStatusId := 2
+	sortBy := "updated_at"
+	orderIsAsc := true
+
+	tasks, err := repo.FindAll(containsForName, filterStatusId, sortBy, orderIsAsc)
+	if err != nil || len(tasks) != 1 {
+		t.Error("Error fetching all tasks or count mismatch")
+	}
+
+	if tasks[0].Id != uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9") {
+		t.Error("An unexpected id was returned")
+	}
+}
+
+func TestGormTaskRepository_FindAll_OrderBy(t *testing.T) {
+	database, cleanup, err := setupDatabase()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cleanup()
+
+	repo := mysql.NewGormTaskRepository(database)
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63"),
+		Name:        "Task One",
+		Description: "This is the first task",
+		StatusId:    1,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9"),
+		Name:        "Task Two",
+		Description: "This is the second task",
+		StatusId:    2,
+		CreatedAt:   now,
+		UpdatedAt:   now.Add(time.Hour * 1),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = repo.Create(&entities.Task{
+		Id:          uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef"),
+		Name:        "Task Three",
+		Description: "This is the third task",
+		StatusId:    3,
+		CreatedAt:   now,
+		UpdatedAt:   now.Add(time.Hour * 2),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	containsForName := ""
+	filterStatusId := -1
+	sortBy := "updated_at"
+	orderIsAsc := false
+
+	tasks, err := repo.FindAll(containsForName, filterStatusId, sortBy, orderIsAsc)
+	if err != nil || len(tasks) != 3 {
+		t.Error("Error fetching all tasks or count mismatch")
+	}
+
+	if tasks[0].Id != uuid.MustParse("07aaadbc-8967-406f-aebd-58b289377aef") {
+		t.Error("An unexpected id was returned")
+	}
+
+	if tasks[1].Id != uuid.MustParse("fad796a1-e0ed-4ee5-9f88-9b7258d35ae9") {
+		t.Error("An unexpected id was returned")
+	}
+
+	if tasks[2].Id != uuid.MustParse("b81240b0-7122-4d06-bdb2-8bcf512d6c63") {
+		t.Error("An unexpected id was returned")
 	}
 }
 

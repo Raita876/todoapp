@@ -22,8 +22,13 @@ func NewTaskService(taskRepository repositories.TaskRepository) interfaces.TaskS
 	}
 }
 
-func (ts *TaskService) FindAllTasks() (*query.TaskQueryListResult, error) {
-	tasks, err := ts.taskRepository.FindAll()
+func (ts *TaskService) FindAllTasks(tasksCommand *command.FindAllTasksCommand) (*query.TaskQueryListResult, error) {
+	tasks, err := ts.taskRepository.FindAll(
+		tasksCommand.ContainsForName,
+		tasksCommand.FilterStatusId,
+		tasksCommand.SortBy,
+		tasksCommand.OrderIsAsc,
+	)
 	if err != nil {
 		return nil, err
 	}

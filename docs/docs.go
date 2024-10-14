@@ -28,11 +28,46 @@ const docTemplate = `{
                     "tasks"
                 ],
                 "summary": "Get tasks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "contains for name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "filter status_id",
+                        "name": "status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "sort by value",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "order by asc or desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.ListTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
@@ -308,7 +343,7 @@ const docTemplate = `{
         "response.TaskResponse": {
             "type": "object",
             "properties": {
-                "create_at": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {
@@ -323,7 +358,7 @@ const docTemplate = `{
                 "status_id": {
                     "type": "integer"
                 },
-                "update_at": {
+                "updated_at": {
                     "type": "string"
                 }
             }

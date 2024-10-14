@@ -2,9 +2,11 @@ package rest
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/raita876/todoapp/docs"
+	"github.com/raita876/todoapp/internal/application/command"
 	"github.com/raita876/todoapp/internal/application/interfaces"
 	"github.com/raita876/todoapp/internal/interface/api/rest/dto/mapper"
 	"github.com/raita876/todoapp/internal/interface/api/rest/dto/request"
@@ -43,12 +45,46 @@ func NewTaskController(r *gin.Engine, service interfaces.TaskService) *TaskContr
 // @Tags tasks
 // @Accept json
 // @Produce json
+// @Param name query string false "contains for name"
+// @Param status_id query int false "filter status_id"
+// @Param sort_by query string false "sort by value"
+// @Param order query string false "order by asc or desc"
 // @Success 200 {object} response.ListTaskResponse
+// @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /tasks [get]
 func (tc *TaskController) GetAllTasksController(c *gin.Context) {
+	name := c.DefaultQuery("name", "")
+	statusId, err := strconv.Atoi(c.DefaultQuery("status_id", "-1"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid status_id format",
+		})
+		return
+	}
+	sortBy := c.DefaultQuery("sort_by", "updated_at")
 
-	tasks, err := tc.service.FindAllTasks()
+	var orderIsAsc bool
+	switch c.DefaultQuery("order", "asc") {
+	case "asc":
+		orderIsAsc = true
+	case "desc":
+		orderIsAsc = false
+	default:
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid order format",
+		})
+		return
+	}
+
+	tasksCommand := &command.FindAllTasksCommand{
+		ContainsForName: name,
+		FilterStatusId:  statusId,
+		SortBy:          sortBy,
+		OrderIsAsc:      orderIsAsc,
+	}
+
+	tasks, err := tc.service.FindAllTasks(tasksCommand)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": "Failed to fetch task",

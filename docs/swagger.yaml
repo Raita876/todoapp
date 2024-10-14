@@ -33,7 +33,7 @@ definitions:
     type: object
   response.TaskResponse:
     properties:
-      create_at:
+      created_at:
         type: string
       description:
         type: string
@@ -43,7 +43,7 @@ definitions:
         type: string
       status_id:
         type: integer
-      update_at:
+      updated_at:
         type: string
     type: object
 info:
@@ -85,6 +85,23 @@ paths:
       consumes:
       - application/json
       description: get tasks
+      parameters:
+      - description: contains for name
+        in: query
+        name: name
+        type: string
+      - description: filter status_id
+        in: query
+        name: status_id
+        type: integer
+      - description: sort by value
+        in: query
+        name: sort_by
+        type: string
+      - description: order by asc or desc
+        in: query
+        name: order
+        type: string
       produces:
       - application/json
       responses:
@@ -92,6 +109,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ListTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:

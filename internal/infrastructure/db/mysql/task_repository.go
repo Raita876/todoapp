@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/raita876/todoapp/internal/domain/entities"
 	"github.com/raita876/todoapp/internal/domain/repositories"
@@ -15,10 +17,24 @@ func NewGormTaskRepository(db *gorm.DB) repositories.TaskRepository {
 	return &GormTaskRepository{db: db}
 }
 
-func (repo *GormTaskRepository) FindAll() ([]*entities.Task, error) {
+func (repo *GormTaskRepository) FindAll(containsForName string, filterStatusId int, sortBy string, orderIsAsc bool) ([]*entities.Task, error) {
 	var dbTasks []Task
 
-	if err := repo.db.Find(&dbTasks).Error; err != nil {
+	name := fmt.Sprintf("%%%s%%", containsForName)
+	statusIds := []int{0, 1, 2, 3}
+	if filterStatusId != -1 {
+		statusIds = []int{filterStatusId}
+	}
+	order := fmt.Sprintf("%s desc", sortBy)
+	if orderIsAsc {
+		order = fmt.Sprintf("%s asc", sortBy)
+	}
+
+	if err := repo.db.
+		Where("name LIKE ?", name).
+		Where("status_id IN ?", statusIds).
+		Order(order).
+		Find(&dbTasks).Error; err != nil {
 		return nil, err
 	}
 
