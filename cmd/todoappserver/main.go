@@ -5,12 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/raita876/todoapp/docs"
 	"github.com/raita876/todoapp/internal/application/services"
 	mysql2 "github.com/raita876/todoapp/internal/infrastructure/db/mysql"
 	"github.com/raita876/todoapp/internal/interface/api/rest"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/urfave/cli/v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -64,9 +61,6 @@ func main() {
 			taskService := services.NewTaskService(taskRepo)
 
 			rest.NewTaskController(r, taskService)
-
-			docs.SwaggerInfo.BasePath = "/api/v1"
-			r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 			return r.Run(addr)
 		},

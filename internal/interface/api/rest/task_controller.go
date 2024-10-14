@@ -4,9 +4,12 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/raita876/todoapp/docs"
 	"github.com/raita876/todoapp/internal/application/interfaces"
 	"github.com/raita876/todoapp/internal/interface/api/rest/dto/mapper"
 	"github.com/raita876/todoapp/internal/interface/api/rest/dto/request"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +28,9 @@ func NewTaskController(r *gin.Engine, service interfaces.TaskService) *TaskContr
 	r.POST("/api/v1/tasks", c.CreateTaskController)
 	r.PUT("/api/v1/tasks", c.PutTaskController)
 	r.DELETE("/api/v1/tasks", c.DeleteTaskController)
+
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return c
 }
