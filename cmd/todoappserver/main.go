@@ -62,6 +62,8 @@ func main() {
 
 			rest.NewTaskController(r, taskService)
 
+			rest.SetPingController(r)
+
 			return r.Run(addr)
 		},
 	}
